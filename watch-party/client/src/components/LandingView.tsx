@@ -27,57 +27,62 @@ const LandingView: React.FC<LandingViewProps> = ({ onJoin }) => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen p-4">
-            <div className="glass-panel p-8 max-w-md w-full text-center space-y-8 animate-fade-in">
-                <div className="flex justify-center mb-6">
-                    <div className="bg-red-600 p-4 rounded-full shadow-[0_0_30px_rgba(220,38,38,0.5)]">
-                        <Play size={48} className="text-white ml-2" />
+        <div className="flex items-center justify-center min-h-screen p-4 bg-[#0A0D14]">
+            <div className="bg-[#13161C] border border-[#222735] p-10 max-w-[440px] w-full text-center space-y-8 rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] animate-fade-in relative overflow-hidden">
+                {/* Subtle top glow effect */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-red-600/5 blur-[80px] rounded-full pointer-events-none"></div>
+
+                <div className="flex justify-center mb-2 relative z-10">
+                    <div className="bg-[#E50914] w-[84px] h-[84px] flex items-center justify-center rounded-full shadow-[0_0_40px_rgba(229,9,20,0.5)] border-2 border-red-500/20">
+                        <Play size={38} className="text-white ml-1.5 fill-white" strokeWidth={2.5} />
                     </div>
                 </div>
 
-                <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">
-                    Watch<span className="text-red-500">Party</span>
-                </h1>
-                <p className="text-gray-400 mb-8">Watch YouTube together in perfect sync.</p>
+                <div className="space-y-2 relative z-10">
+                    <h1 className="text-[32px] font-extrabold tracking-tight text-white leading-none">
+                        Watch<span className="text-[#E50914]">Party</span>
+                    </h1>
+                    <p className="text-[#8A96A8] text-[15px] font-medium">Watch YouTube together in perfect sync.</p>
+                </div>
 
-                <form className="space-y-4">
+                <form className="space-y-6 relative z-10">
                     <div>
                         <input
                             type="text"
                             placeholder="Your Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-gray-800/50 border border-gray-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 transition-all placeholder-gray-500"
+                            className="w-full bg-[#1A1F2B] border border-[#272D3D] text-white px-5 py-3.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-red-500 transition-all placeholder-[#58647A] text-[15px] shadow-inner"
                             maxLength={20}
                         />
                     </div>
 
-                    <div className="pt-4 space-y-4">
+                    <div className="space-y-6">
                         <button
                             onClick={handleCreateRoom}
-                            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(220,38,38,0.39)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.23)] hover:-translate-y-1 active:translate-y-0"
+                            className="w-full bg-[#E50914] hover:bg-[#F6121D] text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-[0_8px_25px_-5px_rgba(229,9,20,0.6)] hover:shadow-[0_12px_30px_-5px_rgba(229,9,20,0.7)] hover:-translate-y-0.5 active:translate-y-0 text-[15px]"
                         >
                             Create New Room
                         </button>
 
                         <div className="relative flex items-center py-2">
-                            <div className="flex-grow border-t border-gray-700"></div>
-                            <span className="flex-shrink-0 mx-4 text-gray-500 text-sm font-medium">OR</span>
-                            <div className="flex-grow border-t border-gray-700"></div>
+                            <div className="flex-grow border-t border-[#272D3D]"></div>
+                            <span className="flex-shrink-0 mx-4 text-[#58647A] text-[13px] font-bold tracking-wider">OR</span>
+                            <div className="flex-grow border-t border-[#272D3D]"></div>
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-3">
                             <input
                                 type="text"
-                                placeholder="Room Code"
+                                placeholder="ROOM CODE"
                                 value={roomId}
                                 onChange={(e) => setRoomId(e.target.value)}
-                                className="flex-grow bg-gray-800/50 border border-gray-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all uppercase placeholder-gray-500"
+                                className="flex-grow bg-[#1A1F2B] border border-[#272D3D] text-white px-5 py-3.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-500 transition-all uppercase placeholder-[#58647A] text-[15px] font-mono shadow-inner"
                                 maxLength={6}
                             />
                             <button
                                 onClick={handleJoinRoom}
-                                className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition-all"
+                                className="bg-[#313B51] hover:bg-[#3D4964] border border-[#3D4964] hover:border-[#4B5978] text-white font-bold py-3.5 px-8 rounded-xl transition-all text-[15px] shadow-lg"
                             >
                                 Join
                             </button>
