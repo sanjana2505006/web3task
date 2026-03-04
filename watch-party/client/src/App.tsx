@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import LandingView from './components/LandingView';
 import RoomView from './components/RoomView';
@@ -32,6 +32,25 @@ function App() {
     currentTime: 0
   });
   const [participants, setParticipants] = useState<Participant[]>([]);
+
+  // Theme state
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    // Check if user has explicit preference, otherwise use dark by default 
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+    return 'dark'; // the sleek UI we built defaults to dark
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   // Connect to socket when joining
   const handleJoin = (roomId: string, username: string) => {
@@ -84,9 +103,9 @@ function App() {
   const currentUserRole = participants.find(p => p.userId === socket?.id)?.role || 'Participant';
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-[#0A0D14] transition-colors duration-300">
       {!inRoom ? (
-        <LandingView onJoin={handleJoin} />
+        <LandingView onJoin={handleJoin} theme={theme} toggleTheme={toggleTheme} />
       ) : (
         <RoomView
           socket={socket!}
@@ -96,6 +115,8 @@ function App() {
           roomState={roomState}
           currentUserRole={currentUserRole}
           onLeave={handleLeave}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
       )}
     </div>
