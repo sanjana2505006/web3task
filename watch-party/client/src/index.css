@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-white min-h-screen relative font-sans overflow-x-hidden;
+    /* Adding a subtle gradient background for aesthetic premium feel */
+    background: radial-gradient(circle at 50% 0%, #1a202c 0%, #000000 100%);
+  }
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.glass-panel {
+  @apply bg-gray-900/60 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
