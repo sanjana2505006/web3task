@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const {
     ROLES, joinRoom, leaveRoom, getRoom, getUserRole,
-    hasPermission, updateRoomState, assignRole, users
+    hasPermission, updateRoomState, assignRole, transferHost, users
 } = require('./roomManager');
 
 const app = express();
@@ -158,6 +158,33 @@ io.on('connection', (socket) => {
                     io.to(user.roomId).emit('room_users', room.participants);
                 }
             }
+        }
+    });
+
+    // Chat
+    socket.on('send_message', (text) => {
+        const user = users.get(socket.id);
+        if (!user) return;
+        io.to(user.roomId).emit('receive_message', {
+            userId: socket.id,
+            username: user.username,
+            text,
+            timestamp: new Date().toISOString()
+        });
+    });
+
+    // Transfer Host
+    socket.on('transfer_host', (targetUserId) => {
+        const user = users.get(socket.id);
+        if (!user) return;
+        const success = transferHost(user.roomId, socket.id, targetUserId);
+        if (success) {
+            const room = getRoom(user.roomId);
+            io.to(user.roomId).emit('host_transferred', {
+                newHostId: targetUserId,
+                participants: room.participants
+            });
+            io.to(user.roomId).emit('room_users', room.participants);
         }
     });
 });

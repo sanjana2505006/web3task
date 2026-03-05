@@ -25,28 +25,28 @@ function getRoom(roomId) {
 function joinRoom(roomId, user) {
   initRoom(roomId);
   const room = rooms.get(roomId);
-  
+
   // First person to join becomes the Host
   let role = ROLES.PARTICIPANT;
   if (room.participants.length === 0) {
     role = ROLES.HOST;
   }
-  
+
   const participant = { ...user, role };
   room.participants.push(participant);
   users.set(user.userId, { roomId, username: user.username, userId: user.userId });
-  
+
   return participant;
 }
 
 function leaveRoom(userId) {
   const user = users.get(userId);
   if (!user) return null;
-  
+
   const room = rooms.get(user.roomId);
   if (room) {
     room.participants = room.participants.filter(p => p.userId !== userId);
-    
+
     // Clean up empty rooms
     if (room.participants.length === 0) {
       rooms.delete(user.roomId);
@@ -58,7 +58,7 @@ function leaveRoom(userId) {
       }
     }
   }
-  
+
   users.delete(userId);
   return user;
 }
@@ -92,6 +92,21 @@ function assignRole(roomId, targetUserId, newRole) {
   return false;
 }
 
+function transferHost(roomId, currentHostId, newHostId) {
+  const room = rooms.get(roomId);
+  if (!room) return false;
+
+  const currentHost = room.participants.find(p => p.userId === currentHostId);
+  const newHost = room.participants.find(p => p.userId === newHostId);
+
+  if (currentHost && newHost && currentHost.role === ROLES.HOST) {
+    currentHost.role = ROLES.MODERATOR; // Demote previous host to Moderator
+    newHost.role = ROLES.HOST;
+    return true;
+  }
+  return false;
+}
+
 module.exports = {
   rooms,
   users,
@@ -102,5 +117,6 @@ module.exports = {
   getUserRole,
   hasPermission,
   updateRoomState,
-  assignRole
+  assignRole,
+  transferHost
 };

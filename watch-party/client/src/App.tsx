@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 import { io, Socket } from 'socket.io-client';
 import LandingView from './components/LandingView';
 import RoomView from './components/RoomView';
@@ -54,7 +56,10 @@ function App() {
 
   // Connect to socket when joining
   const handleJoin = (roomId: string, username: string) => {
-    const newSocket = io(SOCKET_URL);
+    const newSocket = io(SOCKET_URL, {
+      timeout: 5000,
+      reconnectionAttempts: 3
+    });
     setSocket(newSocket);
     setRoomId(roomId);
     setUsername(username);
@@ -64,8 +69,22 @@ function App() {
       setInRoom(true);
     });
 
+    newSocket.on('connect_error', () => {
+      alert("Failed to connect to the server. Please ensure the backend is running.");
+      newSocket.disconnect();
+      setSocket(null);
+    });
+
     setupSocketListeners(newSocket);
   };
+
+  // Deep linking: check URL for room ID on mount
+  useEffect(() => {
+    const path = window.location.pathname.slice(1);
+    if (path && path.length >= 4) {
+      setRoomId(path.toUpperCase());
+    }
+  }, []);
 
   const setupSocketListeners = (s: Socket) => {
     s.on('sync_state', (state: RoomState) => {
@@ -83,6 +102,13 @@ function App() {
 
     s.on('role_assigned', ({ participants }) => setParticipants(participants));
     s.on('participant_removed', ({ participants }) => setParticipants(participants));
+
+    s.on('host_transferred', ({ newHostId, participants }) => {
+      setParticipants(participants);
+      if (s.id === newHostId) {
+        alert("You are now the Host of this room.");
+      }
+    });
 
     s.on('kicked', () => {
       alert("You have been removed from the room.");
@@ -103,23 +129,25 @@ function App() {
   const currentUserRole = participants.find(p => p.userId === socket?.id)?.role || 'Participant';
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0A0D14] transition-colors duration-300">
-      {!inRoom ? (
-        <LandingView onJoin={handleJoin} theme={theme} toggleTheme={toggleTheme} />
-      ) : (
-        <RoomView
-          socket={socket!}
-          roomId={roomId}
-          username={username}
-          participants={participants}
-          roomState={roomState}
-          currentUserRole={currentUserRole}
-          onLeave={handleLeave}
-          theme={theme}
-          toggleTheme={toggleTheme}
-        />
-      )}
-    </div>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}>
+      <div className="min-h-screen bg-white dark:bg-[#0A0D14] transition-colors duration-300">
+        {!inRoom ? (
+          <LandingView onJoin={handleJoin} theme={theme} toggleTheme={toggleTheme} initialRoomId={roomId} />
+        ) : (
+          <RoomView
+            socket={socket!}
+            roomId={roomId}
+            username={username}
+            participants={participants}
+            roomState={roomState}
+            currentUserRole={currentUserRole}
+            onLeave={handleLeave}
+            theme={theme}
+            toggleTheme={toggleTheme}
+          />
+        )}
+      </div>
+    </GoogleOAuthProvider>
   );
 }
 

@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Chrome, Facebook } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
+
 
 interface LandingViewProps {
     onJoin: (roomId: string, username: string) => void;
     theme: 'light' | 'dark';
     toggleTheme: () => void;
+    initialRoomId?: string;
 }
 
-const LandingView: React.FC<LandingViewProps> = ({ onJoin, theme, toggleTheme }) => {
-    const [roomId, setRoomId] = useState('');
+const LandingView: React.FC<LandingViewProps> = ({ onJoin, theme, toggleTheme, initialRoomId = '' }) => {
+    const [roomId, setRoomId] = useState(initialRoomId);
     const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        if (initialRoomId) setRoomId(initialRoomId);
+    }, [initialRoomId]);
 
     const generateRoomId = () => {
         return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -27,6 +34,27 @@ const LandingView: React.FC<LandingViewProps> = ({ onJoin, theme, toggleTheme })
         if (!username || !roomId) return alert('Please enter both username and room code');
         onJoin(roomId.toUpperCase(), username);
     };
+
+    const login = useGoogleLogin({
+        onSuccess: (codeResponse) => {
+            console.log('Login Success:', codeResponse);
+            // In a real app, you'd send codeResponse.access_token to your backend
+            // For now, we'll simulate getting user info if we had a profile endpoint
+            // or just use the fact that they logged in to set a "Google User" name.
+            // Since we're using @react-oauth/google, we might need to fetch user info manually
+            // if we only get an access token.
+            fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${codeResponse.access_token}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.name) {
+                        setUsername(data.name);
+                        // Optionally auto-join or just show they are logged in
+                    }
+                })
+                .catch(err => console.error('Failed to fetch user info:', err));
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-full bg-white dark:bg-[#0A0D14] transition-colors duration-500 overflow-hidden font-sans">
@@ -64,7 +92,10 @@ const LandingView: React.FC<LandingViewProps> = ({ onJoin, theme, toggleTheme })
 
                     {/* Social Buttons */}
                     <div className="flex gap-4">
-                        <button className="flex-1 flex items-center justify-center gap-3 py-3 px-4 bg-gray-50 dark:bg-[#1A1F2B] border border-gray-100 dark:border-[#272D3D] rounded-xl text-gray-700 dark:text-gray-300 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-[#222735] transition-all hover:-translate-y-0.5 shadow-sm">
+                        <button
+                            onClick={() => login()}
+                            className="flex-1 flex items-center justify-center gap-3 py-3 px-4 bg-gray-50 dark:bg-[#1A1F2B] border border-gray-100 dark:border-[#272D3D] rounded-xl text-gray-700 dark:text-gray-300 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-[#222735] transition-all hover:-translate-y-0.5 shadow-sm"
+                        >
                             <Chrome size={18} className="text-blue-500" />
                             Google
                         </button>

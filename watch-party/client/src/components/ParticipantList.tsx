@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Shield, ShieldAlert, X, ChevronDown } from 'lucide-react';
+import { User, Shield, ShieldAlert, X, ChevronDown, Crown } from 'lucide-react';
 import type { Participant, UserRole } from '../App';
 import { Socket } from 'socket.io-client';
 
@@ -21,6 +21,13 @@ const ParticipantList: React.FC<ParticipantListProps> = ({ socket, participants,
     const handleKick = (userId: string) => {
         if (confirm("Are you sure you want to remove this user?")) {
             socket.emit('remove_participant', userId);
+        }
+        setOpenMenuId(null);
+    };
+
+    const handleTransferHost = (userId: string) => {
+        if (confirm("Are you sure you want to transfer ownership? This will de-prioritize your permissions.")) {
+            socket.emit('transfer_host', userId);
         }
         setOpenMenuId(null);
     };
@@ -97,6 +104,13 @@ const ParticipantList: React.FC<ParticipantListProps> = ({ socket, participants,
                                                 onClick={() => handleRoleChange(p.userId, 'Moderator')}
                                             >
                                                 <Shield size={14} /> Make Moderator
+                                            </button>
+
+                                            <button
+                                                className="w-full text-left px-4 py-2 text-sm text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 flex items-center gap-2 transition-colors"
+                                                onClick={() => handleTransferHost(p.userId)}
+                                            >
+                                                <Crown size={14} /> Transfer Host
                                             </button>
 
                                             <div className="border-t border-gray-100 dark:border-gray-700 my-1 transition-colors"></div>

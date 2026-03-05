@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client';
 import { LogOut, Link as LinkIcon, PlaySquare } from 'lucide-react';
 import VideoPlayer from './VideoPlayer';
 import ParticipantList from './ParticipantList';
+import Chat from './Chat';
 import type { RoomState, Participant, UserRole } from '../App';
 
 interface RoomViewProps {
@@ -134,14 +135,19 @@ const RoomView: React.FC<RoomViewProps> = ({
                     )}
                 </div>
 
-                {/* Right Column: Participants List */}
-                <div className="w-[340px] shrink-0">
-                    <ParticipantList
-                        socket={socket}
-                        participants={participants}
-                        currentUserRole={currentUserRole}
-                        currentUserId={currentUserId}
-                    />
+                {/* Right Column: Sidebar (Participants + Chat) */}
+                <div className="w-[340px] shrink-0 flex flex-col gap-4 overflow-hidden h-full">
+                    <div className="flex-grow min-h-[40%] overflow-hidden">
+                        <ParticipantList
+                            socket={socket}
+                            participants={participants}
+                            currentUserRole={currentUserRole}
+                            currentUserId={currentUserId}
+                        />
+                    </div>
+                    <div className="h-[50%] shrink-0">
+                        <Chat socket={socket} username={username} theme={theme} />
+                    </div>
                 </div>
             </div>
         </div>
