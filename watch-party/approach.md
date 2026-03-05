@@ -2,6 +2,16 @@
 
 This document explains our thought process and how we approached building the core features of the YouTube Watch Party system.
 
+## 🏗️ Architecture Overview: WebSocket Integration Flow
+The core of this application is the real-time bridge between the **Frontend** and the **Server**. Here’s how the data flows:
+
+1.  **The Trigger**: A user (Host/Moderator) interacts with the video (e.g., clicks Pause).
+2.  **The Event**: The Frontend emits a specific event (e.g., `socket.emit('pause')`) to our Node.js server.
+3.  **The Validation**: The Server receives the event, looks up the user's role in its memory, and checks: *"Is this person allowed to pause?"*
+4.  **The State Update**: If valid, the Server updates the "Room State" in its internal `Map`.
+5.  **The Broadcast**: The Server then sends a message to **everyone else** in that specific room: *"Everyone, pause at Timestamp X."*
+6.  **The Sync**: All other clients receive this and automatically update their local YouTube player, ensuring everyone is watching the exact same frame.
+
 ## 1. Real-Time Synchronization (The "Heart" of the App)
 **The Problem**: How do we make sure everyone sees the same thing at the same time?
 **The Approach**: We went with a "Single Source of Truth" model. Instead of clients talking to each other, they talk to the Server. 
