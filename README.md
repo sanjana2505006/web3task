@@ -62,4 +62,5 @@ Make sure you have Node.js installed on your machine.
 ## License
 
 This project is open-source and available under the MIT License.
+
 Made with ❤️
