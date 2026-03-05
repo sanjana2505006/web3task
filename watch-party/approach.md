@@ -1,4 +1,4 @@
-# Technical Approach & Implementation Strategy
+# 🫆 Technical Approach & Implementation Strategy
 
 This document explains our thought process and how we approached building the core features of the YouTube Watch Party system.
 
@@ -46,4 +46,4 @@ The core of this application is the real-time bridge between the **Frontend** an
 **The Approach**: We added logic to look at the URL path. If you visit `.../ABCDEF`, the app is smart enough to extract `ABCDEF` and pre-fill it for you. It turns a 3-step process into a 1-click process.
 
 ---
-*This app was built to be fast, sleek, and most importantly, fun to use with friends.*
+*This app was built to be fast, sleek, and most importantly, fun to use with friends. ❤️*
