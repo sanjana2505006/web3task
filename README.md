@@ -104,9 +104,14 @@ CLIENT_URL=https://watch-party.vercel.app
 
 ---
 
-## Demo 
+## Demo Screenshots
+
 <img width="1512" height="902" alt="Screenshot 2026-03-05 at 4 35 53 PM" src="https://github.com/user-attachments/assets/501c97c0-4513-4510-b02b-2c4f0ce8a377" />
+
+
 <img width="1512" height="913" alt="Screenshot 2026-03-05 at 4 36 31 PM" src="https://github.com/user-attachments/assets/6565ce7c-baae-44e6-810d-ea0cf5f288af" />
+
+
 <img width="1512" height="908" alt="Screenshot 2026-03-05 at 4 34 05 PM" src="https://github.com/user-attachments/assets/15581f37-00bb-41f9-bce3-9de242510f82" />
 
 
