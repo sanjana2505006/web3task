@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: watch-party-server
+    runtime: node
+    rootDir: watch-party/server
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: CLIENT_URL
+        sync: false
+      - key: PORT
+        value: 3001

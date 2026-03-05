@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -7,13 +8,23 @@ const {
     hasPermission, updateRoomState, assignRole, transferHost, users
 } = require('./roomManager');
 
+// Allowed origins: comma-separated list in CLIENT_URL env var, or allow all in development
+const allowedOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+    : ['http://localhost:5173'];
+
 const app = express();
-app.use(cors());
+app.use(cors({ origin: allowedOrigins }));
+
+// Health check endpoint (useful for Render/Railway)
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: allowedOrigins,
         methods: ['GET', 'POST']
     }
 });

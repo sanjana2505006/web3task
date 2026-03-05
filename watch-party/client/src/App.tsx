@@ -5,8 +5,8 @@ import { io, Socket } from 'socket.io-client';
 import LandingView from './components/LandingView';
 import RoomView from './components/RoomView';
 
-// Replace with dynamic URL if needed
-const SOCKET_URL = 'http://localhost:3001';
+// In production, set VITE_SOCKET_URL to your deployed backend URL (e.g. https://watch-party-server.onrender.com)
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
 
 export type UserRole = 'Host' | 'Moderator' | 'Participant';
 
