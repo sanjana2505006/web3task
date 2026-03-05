@@ -48,7 +48,9 @@ const LandingView: React.FC<LandingViewProps> = ({ onJoin, theme, toggleTheme, i
                 .then(data => {
                     if (data.name) {
                         setUsername(data.name);
-                        // Optionally auto-join or just show they are logged in
+                        // Auto-join if roomId exists (e.g., from deep link), otherwise create a new one
+                        const finalRoomId = roomId ? roomId.toUpperCase() : generateRoomId();
+                        onJoin(finalRoomId, data.name);
                     }
                 })
                 .catch(err => console.error('Failed to fetch user info:', err));
